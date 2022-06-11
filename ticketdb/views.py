@@ -1,6 +1,10 @@
 import cv2
 import numpy as np
+import io
+import base64
 
+
+from PIL import Image
 from scripts.camClass import VideoCamera
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -12,6 +16,26 @@ from ticketdb.models import AfterTicket
 
 
 cam = VideoCamera()
+
+
+def recieve_image(request):
+    if request.method == 'POST':
+        form = request.POST['photo']
+        split = form.split(",")[1]
+        decoded = base64.b64decode(split)
+        qrdata = decoder(decoded)
+    if(qrdata == None):
+        return HttpResponse("Empty")
+    for ticket in PromTicket.objects.all():
+        if qrdata == ticket.qr_link:
+            ticket.is_valid = ticket.is_valid - 1
+            ticket.save()
+            return HttpResponse("Name: {0} Age: {1} Valid {2}".format(ticket.name, ticket.age, ticket.is_valid + 1))
+    for ticket in AfterTicket.objects.all():
+        if qrdata == ticket.qr_link:
+            ticket.is_valid = ticket.is_valid - 1
+            ticket.save()
+            return HttpResponse("Name: {0} Age: {1} Valid {2}".format(ticket.name, ticket.age, ticket.is_valid + 1))
 
 
 def get_log(request):
@@ -31,6 +55,7 @@ def index(request):
 
 
 def decoder(image):
+    image = cv2.cvtColor(np.array(Image.open(io.BytesIO(image))), cv2.COLOR_BGR2RGB)
     gray_img = cv2.cvtColor(image, 0)
     barcode = decode(gray_img)
 

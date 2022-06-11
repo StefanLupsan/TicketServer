@@ -1,3 +1,4 @@
+<!--
 <html>
   <head>
     <title> Video Live Stream </title>
@@ -16,5 +17,41 @@
       }, 2000); // the "1000"
     });
   </script>
+
   </body>
+</html> -->
+
+<!doctype html>
+<html>
+{% block content %}
+{% load static %}
+<head>
+    <title>VisionApp</title>
+    <meta charset='utf-8'>
+    <link href="{% static 'ticketdb/style.css' %}" media="all" rel="stylesheet" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'ticketdb/index.js' %}" type="module"></script>
+
+</head>
+<body>
+<div class="contentarea">
+    <div class="Input">
+        <form enctype='multipart/form-data' method="POST" name="index" action="image_upload/">
+            {% csrf_token %}
+            <div class="camera" id="camera">
+                <video id="video">Video stream not available.</video>
+                <button id="startbutton" type="button">Take photo</button>
+                <input id="webimg" name="src" style="display: none;" type="text" value="">
+                <canvas id="canvas">
+                </canvas>
+            </div>
+            <br>
+            <div>
+                <img alt="your image" id="photo">
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+{% endblock %}
 </html>

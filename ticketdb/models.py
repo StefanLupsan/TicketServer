@@ -25,3 +25,10 @@ class AfterTicket(models.Model):
     qr_link = models.CharField(unique=True, max_length=400, default=generate_qr_link)
     is_valid = models.IntegerField(default=1)
     mail_sent = models.IntegerField(default=0)
+
+
+class ImageForm(models.Model):
+    def __str__(self):
+        return self.name
+    name = models.CharField(unique=True, max_length=100)
+    image = models.ImageField(upload_to='images/')
